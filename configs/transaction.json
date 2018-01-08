@@ -1,0 +1,15 @@
+{
+    "columns": [
+        {"id": "sno", "text": "S. No.", "wid": 50},
+        {"id": "dated", "text": "Dated", "wid": 0},
+        {"id": "ref", "text": "Reference", "wid": 0},
+        {"id": "nar", "text": "Narration", "wid": 0},
+        {"id": "debit", "text": "Debit", "wid": 0},
+        {"id": "credit", "text": "Credit", "wid": 0}
+    ],
+    "type": "view",
+    "buttons": [
+        {"id": "save_entry", "text": "Save"},
+        {"id": "cancel", "text": "Cancel"}
+    ]
+}

@@ -12,6 +12,8 @@ def insert_multi(table, data):
     res = db[table].insert_many(data)
     return res.inserted_ids
 
-def find(k, v, c):
-    res = db.customers.find({k: v})
-    return res
+def find(table, k, v, required_key=None):
+    res = db[table].find({k: v})
+    if required_key is None:
+        return res
+    return (None if required_key not in res else res[required_key])

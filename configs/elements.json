@@ -1,60 +1,69 @@
 {
-    "org_name": "Shri Ram Jewell Makers, Kushmiliya",
+    "org_name": "Org Name",
     "common_fields": ["On Counter", "Dated", "Gold (Rs./10g)", "Silver (Rs./10g)"],
     "tabs": [
-	{
-	    "tab_id": "customer_entry",
-	    "title": "New Cutomer Entry",
-	    "columns": [
-		{"id": "sno", "text": "S. No.", "wid": 50},
-		{"id": "name", "text": "Name", "wid": 0},
-		{"id": "addr", "text": "Address", "wid": 0},
-		{"id": "contact", "text": "Contact", "wid": 0}
-	    ],
-	    "visible": "true",
-	    "type": "entry",
-	    "default_rows": 1
-	},
-	{
-	    "tab_id": "order_entry",
-	    "title": "Order Entry",
-	    "columns": ["S. No.", "Type", "Particular", "Design No.", "Est. Wt. (g)", "Labour (Rs.)", "Est. Cost (Rs.)"],
-	    "visible": "false",
-	    "type": "entry",
-	    "default_rows": 5
-	},
-	{
-	    "tab_id": "sales_entry",
-	    "title": "Sales Entry",
-	    "columns": [
-		{"id": "sno", "text": "S. No.", "wid": 50},
-		{"id": "parti", "text": "Particular", "wid": 0},
-		{"id": "wt", "text": "Weight (g)", "wid": 100},
-		{"id": "less", "text": "Copper Less (%)", "wid": 100},
-		{"id": "rated", "text": "Rated (Rs./g)", "wid": 100},
-		{"id": "labour", "text": "Labour (Rs.)", "wid": 100},
-		{"id": "cost", "text": "Cost (Rs.)", "wid": 100},
-		{"id": "is_deliver", "text": "Is Delivering", "wid": 100},
-		{"id": "order_id", "text": "Order ID", "wid": 100},
-		{"id": "order_dated", "text": "Order Dated", "wid": 100}
-	    ],
-	    "visible": "true",
-	    "type": "entry",
-	    "default_rows": 5
-	},
-	{
-	    "tab_id": "ledger",
-	    "title": "Ledger",
-	    "columns": [
-		{"id": "name", "text": "Name", "wid": 0},
-		{"id": "addr", "text": "Address", "wid": 0},
-		{"id": "balance", "text": "Balance (Rs.)", "wid": 0},
-		{"id": "view", "text": "", "wid": 50},
-		{"id": "add", "text": "", "wid": 50}
-	    ],
-	    "visible": "true",
-	    "type": "search",
-	    "default_rows": 10
-	}
+    	{
+    	    "tab_id": "customer_entry",
+    	    "title": "New Cutomer Entry",
+    	    "columns": [
+        		{"id": "sno", "text": "S. No.", "wid": 50},
+        		{"id": "name", "text": "Name", "wid": 0},
+        		{"id": "addr", "text": "Address", "wid": 0},
+        		{"id": "contact", "text": "Contact", "wid": 0}
+    	    ],
+    	    "visible": "true",
+    	    "type": "entry",
+    	    "default_rows": 1,
+            "buttons": [
+                {"id": "save_entry", "text": "Save"}
+            ]
+    	},
+    	{
+    	    "tab_id": "order_entry",
+    	    "title": "Order Entry",
+    	    "columns": ["S. No.", "Type", "Particular", "Design No.", "Est. Wt. (g)", "Labour (Rs.)", "Est. Cost (Rs.)"],
+    	    "visible": "false",
+    	    "type": "entry",
+    	    "default_rows": 5,
+            "buttons": [
+                {"id": "save_entry", "text": "Save"}
+            ]
+    	},
+    	{
+    	    "tab_id": "sales_entry",
+    	    "title": "Sales Entry",
+    	    "columns": [
+        		{"id": "sno", "text": "S. No.", "wid": 50},
+        		{"id": "parti", "text": "Particular", "wid": 0},
+        		{"id": "wt", "text": "Weight (g)", "wid": 100},
+        		{"id": "less", "text": "Copper Less (%)", "wid": 100},
+        		{"id": "rated", "text": "Rated (Rs./g)", "wid": 100},
+        		{"id": "labour", "text": "Labour (Rs.)", "wid": 100},
+        		{"id": "cost", "text": "Cost (Rs.)", "wid": 100},
+        		{"id": "is_deliver", "text": "Is Delivering", "wid": 100},
+        		{"id": "order_id", "text": "Order ID", "wid": 100},
+        		{"id": "order_dated", "text": "Order Dated", "wid": 100}
+    	    ],
+    	    "visible": "true",
+    	    "type": "entry",
+    	    "default_rows": 5,
+            "buttons": [
+                {"id": "save_entry", "text": "Save"}
+            ]
+    	},
+    	{
+    	    "tab_id": "ledger",
+    	    "title": "Ledger",
+    	    "columns": [
+        		{"id": "name", "text": "Name", "wid": 0},
+        		{"id": "addr", "text": "Address", "wid": 0},
+        		{"id": "balance", "text": "Balance (Rs.)", "wid": 0},
+        		{"id": "view", "text": "", "wid": 50},
+        		{"id": "add", "text": "", "wid": 50}
+    	    ],
+    	    "visible": "true",
+    	    "type": "search",
+    	    "default_rows": 10
+    	}
     ]
 }

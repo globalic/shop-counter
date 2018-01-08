@@ -21,7 +21,7 @@
 			GridLayout:
 				id: common_fields
 				cols: 4
-			BoxLayout:	
+			BoxLayout:
 
 		TabbedPanel:
 			id: tab_panel
@@ -49,10 +49,15 @@
 	size_hint: (1, None)
 	TextInput:
 		size_hint_x: 0.8
+		id: search_box
 	Button:
 		text: 'Search'
 		size_hint_x: 0.2
-			
+		on_release: root.search()
+
+<Transaction>:
+	size_hint: (0.8, 0.8)
+
 <Label>:
 	color: (0,0,0,1)
 	size: (20, 30)
@@ -60,11 +65,10 @@
 
 <Button>:
 	color: (1,1,1,1)
-	
+
 <TextInput>:
 	size: (20, 30)
 	size_hint: (1, None)
 
 <TabbedPanelHeader>:
 	color: (1,1,1,1)
-
