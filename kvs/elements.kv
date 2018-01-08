@@ -1,0 +1,70 @@
+<Elements>:
+	canvas:
+		Color:
+			rgba: .9,.9,.9,1
+		Rectangle:
+			size: self.size
+			pos: self.pos
+	BoxLayout:
+		pos: (0, self.parent.top - self.height)
+		size: self.parent.size
+		orientation: 'vertical'
+		BoxLayout:
+			id: header
+			orientation: 'vertical'
+			size_hint_y: .3
+			Label:
+				id: org_logo
+				color: (0,0,0,1)
+				size_hint: (1, .4)
+				text: "Organization Name"
+			GridLayout:
+				id: common_fields
+				cols: 4
+			BoxLayout:	
+
+		TabbedPanel:
+			id: tab_panel
+			size_hint: (1, 1)
+			do_default_tab: False
+			tab_width: self.parent.width / 5
+
+		BoxLayout:
+			size: (20, 30)
+			size_hint: (1, None)
+			Label:
+				text: 'Message Box'
+
+
+<Table>:
+	canvas:
+		Color:
+			rgba: .9,.9,.9,1
+		Rectangle:
+			size: self.size
+			pos: self.pos
+
+<SearchTab>:
+	size: (30, 30)
+	size_hint: (1, None)
+	TextInput:
+		size_hint_x: 0.8
+	Button:
+		text: 'Search'
+		size_hint_x: 0.2
+			
+<Label>:
+	color: (0,0,0,1)
+	size: (20, 30)
+	size_hint: (1, None)
+
+<Button>:
+	color: (1,1,1,1)
+	
+<TextInput>:
+	size: (20, 30)
+	size_hint: (1, None)
+
+<TabbedPanelHeader>:
+	color: (1,1,1,1)
+
