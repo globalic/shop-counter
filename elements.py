@@ -100,7 +100,7 @@ class Elements(Widget):
         self.element_file = 'configs/elements.json'
         self.elements = self.get_elements()
         self.ids.org_logo.text = self.elements['org_name']
-        self.add_common_fields()
+        #self.add_common_fields()
         self.add_tabs()
 
     def get_elements(self):

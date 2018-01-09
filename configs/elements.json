@@ -44,7 +44,7 @@
         		{"id": "order_id", "text": "Order ID", "wid": 100},
         		{"id": "order_dated", "text": "Order Dated", "wid": 100}
     	    ],
-    	    "visible": "true",
+    	    "visible": "false",
     	    "type": "entry",
     	    "default_rows": 5,
             "buttons": [
