@@ -4,7 +4,7 @@ from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
-
+from functools import partial
 import db_ops
 
 
@@ -49,30 +49,33 @@ class Table(GridLayout):
                         text=data[i][col['id']]
                     ))
 
-    def save_entry(self, btn, *args):
+    def save_entry(self, tab, *args):
         rows = int(len(self.children)/self.cols)
-        customers = []
+        entries = []
         for i in range(rows-1):
-            cust = {'balance': 0}
+            entry = {}
             for j in range(self.cols-1):  # ignore the S. No.
                 cell = self.children[i*self.cols+j]
-                print(cell.text)
-                cust[cell.field] = cell.text
+                # print(cell.text)
+                entry[cell.field] = cell.text.strip()
                 cell.text = ''
-            customers.append(cust)
-        ids = db_ops.insert_multi('customers', customers)
+            # check if whole row is empty
+            if all([v == '' for v in entry.values()]):
+                continue
+            entries.append(entry)
+        ids = db_ops.insert_update_many(tab._id, entries, tab.cust_id)
         print(ids)
 
-    def cancel(self, btn, *args):
+    def cancel(self, popup, *args):
         # this function assumes the table is in Popup widget
-        btn.parent.parent.dismiss()
+        popup.dismiss()
 
+        
 def add_item_in_tab(tab_widget, columns, tab_type, n_rows=0):
     n_cols = len(columns)
     tab_content = BoxLayout(orientation='vertical')
     table = Table(cols=n_cols)
     for col in columns:
-        print(col['text'])
         width = (1 if col['wid'] is 0 else None)
         table.add_widget(Label(
             text=col['text'],
@@ -85,8 +88,21 @@ def add_item_in_tab(tab_widget, columns, tab_type, n_rows=0):
 def add_buttons(target, buttons):
     # btn id is should be same as the call function name for that button
     # and must be defined in Table class
+    table = target.content.children[0]
     for btn in buttons:
-        target.parent.add_widget(Button(
+        target.content.add_widget(Button(
             text=btn['text'],
-            on_release=getattr(target, btn['id'])
+            on_release=partial(getattr(table, btn['id']), target)
         ))
+
+def calculate_bal(transacs):
+    if transacs is None:
+        return 0
+    
+    debit = 0
+    credit = 0
+    for t in transacs:
+
+        debit += (int(t['debit']) if t['debit'] is not '' else 0)
+        credit += (int(t['credit']) if t['credit'] is not '' else 0)
+    return (credit - debit)

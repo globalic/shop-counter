@@ -1,4 +1,5 @@
 {
+    "id": "transactions",
     "columns": [
         {"id": "sno", "text": "S. No.", "wid": 50},
         {"id": "dated", "text": "Dated", "wid": 0},
@@ -10,6 +11,6 @@
     "type": "view",
     "buttons": [
         {"id": "save_entry", "text": "Save"},
-        {"id": "cancel", "text": "Cancel"}
+        {"id": "cancel", "text": "Close"}
     ]
 }

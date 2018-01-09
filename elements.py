@@ -17,8 +17,10 @@ Builder.load_file('kvs/elements.kv')
 
 class Tab(TabbedPanelItem):
 
-    def __init__(self, **kwargs):
+    def __init__(self, tab_id, cust_id=None, **kwargs):
         super().__init__(**kwargs)
+        self._id = tab_id
+        self.cust_id = cust_id
 
 
 class SearchTab(BoxLayout):
@@ -29,17 +31,17 @@ class SearchTab(BoxLayout):
 
     def search(self):
         res = db_ops.find('customers', 'name', self.ids.search_box.text)
-        print('res', res)
         self.display_result(res)
 
     def display_result(self, results):
-        if self.box is None or results is None:
+        if self.box is None or len(results) == 0:
             return
-        self.box.clear_widgets()
+        self.box.clear_widgets()        
         for res in results:
+            balance = helper.calculate_bal(res.get('transactions'))
             self.box.add_widget(Label(text=res['name']))
             self.box.add_widget(Label(text=res['addr']))
-            self.box.add_widget(Label(text=str(res['balance'])))
+            self.box.add_widget(Label(text=str(balance) ))
             self.box.add_widget(CustomButton(text='View', name=res['name'],
                 on_release=self.view_transac))
             self.box.add_widget(CustomButton(text='Add New', name=res['name'],
@@ -64,9 +66,11 @@ class Transaction(Popup):
         super().__init__(**kwargs)
         self.cust_id = cust_id
         self.config = self.get_config(conf_file)
+        self._id = self.config['id']
 
         # add header
-        helper.add_item_in_tab(self, self.config['columns'], self.config['type'])
+        helper.add_item_in_tab(self, self.config['columns'],
+                               self.config['type'])
         # view transactions
         if data is not None:
             self.fill_data(data)
@@ -86,7 +90,7 @@ class Transaction(Popup):
     def fill_fields(self):
         target = self.content.children[0]
         target.add_new_rows(1, self.config['columns'], 1)
-        helper.add_buttons(target, self.config['buttons'])
+        helper.add_buttons(self, self.config['buttons'])
 
 
 class Elements(Widget):
@@ -112,19 +116,20 @@ class Elements(Widget):
                 TextInput(multiline=False))
 
     def add_tabs(self):
+        need_default = True
         for tab in self.elements['tabs']:
             if tab['visible'] == "true":
-                tab_widget = Tab(text=tab['title'])
+                tab_widget = Tab(tab['tab_id'], text=tab['title'])
 
                 # add header
                 helper.add_item_in_tab(tab_widget, tab['columns'],
                     tab['type'], tab['default_rows'])
 
-                # add text fields for entry type tabs
+                # add text fields and buttons for entry type tabs
                 if tab['type'] == 'entry':
                     tab_widget.content.children[0].add_new_rows(
                         1, tab['columns'], tab['default_rows'])
-                    helper.add_buttons(tab_widget.content.children[0],
+                    helper.add_buttons(tab_widget,
                         tab['buttons'])
 
                 # add search box and results header
@@ -134,7 +139,9 @@ class Elements(Widget):
                         tab['columns'],
                         tab['type']
                     )
-
+                if need_default:
+                    self.ids.tab_panel.default_tab = tab_widget
+                    need_default = False
                 self.ids.tab_panel.add_widget(tab_widget)
 
     def fill_search_tab(self, tab_widget, columns, tab_type):
