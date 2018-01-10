@@ -1,4 +1,5 @@
 <Elements>:
+	msg_box: msg_box
 	canvas:
 		Color:
 			rgba: .9,.9,.9,1
@@ -32,7 +33,8 @@
 			size: (20, 30)
 			size_hint: (1, None)
 			Label:
-				text: 'Message Box'
+				id: msg_box
+				text: ''
 
 
 <Table>:
@@ -68,6 +70,8 @@
 <TextInput>:
 	size: (20, 30)
 	size_hint: (1, None)
+	write_tab: False
+	multiline: False
 
 <TabbedPanelHeader>:
 	color: (1,1,1,1)

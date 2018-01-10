@@ -4,7 +4,9 @@ from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
+from kivy.app import App
 from functools import partial
+from threading import Timer
 import db_ops
 
 
@@ -63,8 +65,9 @@ class Table(GridLayout):
             if all([v == '' for v in entry.values()]):
                 continue
             entries.append(entry)
-        ids = db_ops.insert_update_many(tab._id, entries, tab.cust_id)
-        print(ids)
+        msg = db_ops.insert_update_many(tab._id, entries, tab.cust_id)
+        print(msg)
+        show_msg(msg)
 
     def cancel(self, popup, *args):
         # this function assumes the table is in Popup widget
@@ -106,3 +109,13 @@ def calculate_bal(transacs):
         debit += (int(t['debit']) if t['debit'] is not '' else 0)
         credit += (int(t['credit']) if t['credit'] is not '' else 0)
     return (credit - debit)
+
+def clear_msg(box, a):
+    box.text = ''
+    
+def show_msg(msg):
+    msg_box = App.get_running_app().root.children[0].msg_box
+    msg_box.text = msg[1]
+    msg_box.color = ([0, 0.5, 0, 1] if msg[0] == 0 else [0.5, 0, 0, 1])
+    Timer(3, clear_msg, (msg_box, 'x')).start()
+    

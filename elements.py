@@ -8,6 +8,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.tabbedpanel import TabbedPanelItem
 from kivy.uix.popup import Popup
 from kivy.lang import Builder
+from kivy.properties import ObjectProperty
 import json
 import db_ops
 import helper
@@ -94,6 +95,8 @@ class Transaction(Popup):
 
 
 class Elements(Widget):
+
+    msg_box = ObjectProperty()
 
     def __init__(self, **kargs):
         super().__init__(**kargs)
