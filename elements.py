@@ -12,7 +12,7 @@ from kivy.properties import ObjectProperty
 import json
 import db_ops
 import helper
-from helper import CustomButton, CustomTextInput
+from helper import CustomButton, CustomTextInput, Table
 
 Builder.load_file('kvs/elements.kv')
 
@@ -37,9 +37,16 @@ class SearchTab(BoxLayout):
     def display_result(self, results):
         if self.box is None or len(results) == 0:
             return
-        self.box.clear_widgets()        
+        self.box.clear_widgets()
+        
+        self.box.add_widget(Label(text='Name'))
+        self.box.add_widget(Label(text='Address'))
+        self.box.add_widget(Label(text='Balance'))
+        self.box.add_widget(Label(text=''))
+        self.box.add_widget(Label(text=''))
+        
         for res in results:
-            balance = helper.calculate_bal(res.get('transactions'))
+            balance = helper.calculate_bal(res.get('transactions'))         
             self.box.add_widget(Label(text=res['name']))
             self.box.add_widget(Label(text=res['addr']))
             self.box.add_widget(Label(text=str(balance) ))
@@ -148,11 +155,12 @@ class Elements(Widget):
                 self.ids.tab_panel.add_widget(tab_widget)
 
     def fill_search_tab(self, tab_widget, columns, tab_type):
-        results = BoxLayout()
+        results = Table(cols=5)
         # fill results with columns header
-        helper.add_item_in_tab(results, columns, tab_type, 0)
+        #helper.add_item_in_tab(results, [], tab_type, 0)
         # add search box
-        search = SearchTab(results.children[0].children[0])
+        #search = SearchTab(results.children[0].children[0])
+        search = SearchTab(results)
         tab_content = BoxLayout(orientation='vertical')
         tab_content.add_widget(search)
         tab_content.add_widget(results)

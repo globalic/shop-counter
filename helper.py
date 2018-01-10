@@ -74,7 +74,7 @@ class Table(GridLayout):
         popup.dismiss()
 
         
-def add_item_in_tab(tab_widget, columns, tab_type, n_rows=0):
+def add_item_in_tab(tab_widget, columns, tab_type=None, n_rows=0):
     n_cols = len(columns)
     tab_content = BoxLayout(orientation='vertical')
     table = Table(cols=n_cols)
