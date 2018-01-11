@@ -8,7 +8,7 @@ Plan is to add options for taking orders and product sell entries.
 
 - Install MongoDB as per you system configuration from [here](https://www.mongodb.com/download-center#community).
 - Start the MongoDB server, for Windows - follow [this](https://docs.mongodb.com/tutorials/install-mongodb-on-windows/).
-- Download and extract the [Windows package]().
+- Download and extract the [Windows package](https://github.com/krsoninikhil/shop-counter/releases/download/v0.1/ShopCounter.zip).
 - Change database configuration in `configs/connect_db.json`.
 - Start application by executing `ShopCounter.exe`.
 
