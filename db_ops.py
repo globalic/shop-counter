@@ -5,7 +5,7 @@ import re
 with open('configs/connect_db.json') as f:
     conf = json.load(f)
 
-client = MongoClient('{}:{}'.format(conf['host'], conf['port']))
+client = MongoClient('mongodb://{}:{}'.format(conf['host'], conf['port']))
 db = getattr(client, conf['db'])
 
 def insert_update_many(key, data, pk=None):

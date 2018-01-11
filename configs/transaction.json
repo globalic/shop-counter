@@ -2,11 +2,11 @@
     "id": "transactions",
     "columns": [
         {"id": "sno", "text": "S. No.", "wid": 50},
-        {"id": "dated", "text": "Dated", "wid": 0, "value": "get_date"},
-        {"id": "ref", "text": "Reference", "wid": 0},
+        {"id": "dated", "text": "Dated", "wid": 100, "value": "get_date"},
+        {"id": "ref", "text": "Reference", "wid": 100},
         {"id": "nar", "text": "Narration", "wid": 0},
-        {"id": "debit", "text": "Debit", "wid": 0},
-        {"id": "credit", "text": "Credit", "wid": 0}
+        {"id": "debit", "text": "Debit", "wid": 100},
+        {"id": "credit", "text": "Credit", "wid": 100}
     ],
     "type": "view",
     "buttons": [
