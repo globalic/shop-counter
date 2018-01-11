@@ -5,6 +5,7 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from functools import partial
+from datetime import datetime
 import db_ops
 
 
@@ -37,10 +38,14 @@ class Table(GridLayout):
             for col in cols[1:]:
                 width = (1 if col['wid'] is 0 else None)
                 if data is None:
+                    text = ''
+                    if col.get('value') is not None:
+                        text = getattr(self, col['value'])()
                     self.add_widget(CustomTextInput(
                         size=(col['wid'], 30),
                         size_hint=(width, None),
-                        field=col['id']
+                        field=col['id'],
+                        text=text
                     ))
                 else:
                     self.add_widget(Label(
@@ -48,6 +53,9 @@ class Table(GridLayout):
                         size_hint=(width, None),
                         text=data[i][col['id']]
                     ))
+
+    def get_date(self):
+        return datetime.now().strftime('%d/%m/%Y')
 
     def save_entry(self, tab, *args):
         rows = int(len(self.children)/self.cols)
@@ -70,7 +78,7 @@ class Table(GridLayout):
         # this function assumes the table is in Popup widget
         popup.dismiss()
 
-        
+
 def add_item_in_tab(tab_widget, columns, tab_type, n_rows=0):
     n_cols = len(columns)
     tab_content = BoxLayout(orientation='vertical')
@@ -98,7 +106,7 @@ def add_buttons(target, buttons):
 def calculate_bal(transacs):
     if transacs is None:
         return 0
-    
+
     debit = 0
     credit = 0
     for t in transacs:

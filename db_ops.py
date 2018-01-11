@@ -11,13 +11,15 @@ db = getattr(client, conf['db'])
 def insert_update_many(key, data, pk=None):
     if key == 'customer_entry':
         # allowing only one customer entry at a time, for now
+        if len(data) == 0:
+            return (1, 'No Data Provided!')
         cust = db.customers.find({'name': data[0]['name']}).count()
         if cust > 0:
             return (1, 'Already Exists!')
         else:
             db.customers.insert_many(data)
             return (0, 'Customer Registered!')
-            
+
     elif key == 'transactions' and pk is not None:
         cust = db.customers.find_one({'name': pk})
         if cust is not None:

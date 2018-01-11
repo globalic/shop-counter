@@ -34,9 +34,9 @@ class SearchTab(BoxLayout):
         self.display_result(res)
 
     def display_result(self, results):
-        if self.box is None or len(results) == 0:
+        if self.box is None:
             return
-        self.box.clear_widgets()        
+        self.box.clear_widgets()
         for res in results:
             balance = helper.calculate_bal(res.get('transactions'))
             self.box.add_widget(Label(text=res['name']))
