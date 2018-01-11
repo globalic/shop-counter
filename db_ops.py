@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 import json
-
+import re
 
 with open('configs/connect_db.json') as f:
     conf = json.load(f)
@@ -41,6 +41,9 @@ def insert_update_many(key, data, pk=None):
         pass
 
 def find(table, k, v, required_key=None):
+    if v == '' or v is None:
+        return []
+    v = re.compile(v, re.IGNORECASE)
     if required_key is None:
         res = list(db[table].find({k: v}) )
     else:
