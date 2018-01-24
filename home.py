@@ -11,6 +11,7 @@ from elements import Elements
 class Home(App):
 
     def build(self):
+        self.title = 'ShopCounter'
         elements = Elements()
         main_frame = BoxLayout()
         main_frame.add_widget(elements)
