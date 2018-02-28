@@ -113,9 +113,9 @@ def calculate_bal(transacs):
     debit = 0
     credit = 0
     for t in transacs:
-
         debit += (int(t['debit']) if t['debit'] is not '' else 0)
         credit += (int(t['credit']) if t['credit'] is not '' else 0)
+        
     return (credit - debit)
 
 def clear_msg(box, a):

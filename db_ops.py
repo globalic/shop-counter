@@ -40,10 +40,13 @@ def insert_update_many(key, data, pk=None):
     else:
         pass
 
-def find(table, k, v, required_key=None):
+def find(table, k, v, required_key=None, match_exact=True):
+    res = []
     if v == '' or v is None:
         return []
-    v = re.compile(v, re.IGNORECASE)
+    if not match_exact:
+        v = re.compile(v, re.IGNORECASE)
+
     if required_key is None:
         res = list(db[table].find({k: v}) )
     else:

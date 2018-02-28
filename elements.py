@@ -31,7 +31,8 @@ class SearchTab(BoxLayout):
         self.box = box
 
     def search(self):
-        res = db_ops.find('customers', 'name', self.ids.search_box.text)
+        res = db_ops.find('customers', 'name', self.ids.search_box.text,
+            match_exact=False)
         self.display_result(res)
 
     def display_result(self, results):
