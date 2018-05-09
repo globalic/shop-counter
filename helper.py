@@ -7,6 +7,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.popup import Popup
 from kivy.app import App
 from functools import partial
+from datetime import datetime
 from threading import Timer
 import db_ops
 import json
@@ -29,7 +30,7 @@ class CustomButton(Button):
 
 class Transaction(Popup):
 
-    def __init__(self, data=None, cust_id=None, editable=True, 
+    def __init__(self, data=None, cust_id=None, editable=True,
                  **kwargs):
         super().__init__(**kwargs)
         self.cust_id = cust_id
@@ -78,7 +79,7 @@ class Table(GridLayout):
                 size_hint=(None, None)))
             for col in cols[1:]:
                 width = (1 if col['wid'] is 0 else None)
-                
+
                 if data and col['id'] == 'action':
                     self.add_widget(Button(
                         size=(col['wid'], 30),
@@ -100,6 +101,9 @@ class Table(GridLayout):
                         size_hint=(width, None),
                         text=data[i][col['id']]
                     ))
+
+    def get_date(self):
+        return datetime.now().strftime('%d/%m/%Y')
 
     def save_entry(self, tab, *args):
         rows = int(len(self.children)/self.cols)
@@ -156,20 +160,20 @@ def add_buttons(target, buttons):
 def calculate_bal(transacs):
     if transacs is None:
         return 0
-    
+
     debit = 0
     credit = 0
     for t in transacs:
         debit += (int(t['debit']) if t['debit'] is not '' else 0)
         credit += (int(t['credit']) if t['credit'] is not '' else 0)
+
     return (credit - debit)
 
 def clear_msg(box, a):
     box.text = ''
-    
+
 def show_msg(msg):
     msg_box = App.get_running_app().root.children[0].msg_box
     msg_box.text = msg[1]
     msg_box.color = ([0, 0.5, 0, 1] if msg[0] == 0 else [0.5, 0, 0, 1])
     Timer(3, clear_msg, (msg_box, 'x')).start()
-    

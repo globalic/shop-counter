@@ -1,23 +1,25 @@
 from pymongo import MongoClient
 import json
-
+import re
 
 with open('configs/connect_db.json') as f:
     conf = json.load(f)
 
-client = MongoClient('{}:{}'.format(conf['host'], conf['port']))
+client = MongoClient('mongodb://{}:{}'.format(conf['host'], conf['port']))
 db = getattr(client, conf['db'])
 
 def insert_update_many(key, data, pk=None):
     if key == 'customer_entry':
         # allowing only one customer entry at a time, for now
+        if len(data) == 0:
+            return (1, 'No Data Provided!')
         cust = db.customers.find({'name': data[0]['name']}).count()
         if cust > 0:
             return (1, 'Already Exists!')
         else:
             db.customers.insert_many(data)
             return (0, 'Customer Registered!')
-            
+
     elif key == 'transactions' and pk is not None:
         cust = db.customers.find_one({'name': pk})
         if cust is not None:
@@ -38,7 +40,13 @@ def insert_update_many(key, data, pk=None):
     else:
         pass
 
-def find(table, k, v, required_key=None):
+def find(table, k, v, required_key=None, match_exact=True):
+    res = []
+    if v == '' or v is None:
+        return []
+    if not match_exact:
+        v = re.compile(v, re.IGNORECASE)
+
     if required_key is None:
         res = list(db[table].find({k: v}) )
     else:

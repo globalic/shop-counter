@@ -30,22 +30,23 @@ class SearchTab(BoxLayout):
         self.box = box
 
     def search(self):
-        res = db_ops.find('customers', 'name', self.ids.search_box.text)
+        res = db_ops.find('customers', 'name', self.ids.search_box.text,
+            match_exact=False)
         self.display_result(res)
 
     def display_result(self, results):
-        if self.box is None or len(results) == 0:
+        if self.box is None:
             return
         self.box.clear_widgets()
-        
+
         self.box.add_widget(Label(text='Name'))
         self.box.add_widget(Label(text='Address'))
         self.box.add_widget(Label(text='Balance'))
         self.box.add_widget(Label(text=''))
         self.box.add_widget(Label(text=''))
-        
+
         for res in results:
-            balance = helper.calculate_bal(res.get('transactions'))         
+            balance = helper.calculate_bal(res.get('transactions'))
             self.box.add_widget(Label(text=res['name']))
             self.box.add_widget(Label(text=res['addr']))
             self.box.add_widget(Label(text=str(balance) ))
