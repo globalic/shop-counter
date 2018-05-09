@@ -6,13 +6,12 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.tabbedpanel import TabbedPanelItem
-from kivy.uix.popup import Popup
 from kivy.lang import Builder
 from kivy.properties import ObjectProperty
 import json
 import db_ops
 import helper
-from helper import CustomButton, CustomTextInput, Table
+from helper import CustomButton, CustomTextInput, Transaction, Table
 
 Builder.load_file('kvs/elements.kv')
 
@@ -57,48 +56,13 @@ class SearchTab(BoxLayout):
 
     def view_transac(self, btn, *args):
         transacs = db_ops.find('customers', 'name', btn.name, 'transactions')
-        popup = Transaction('transaction.json', data=transacs, title=btn.name)
+        popup = Transaction(data=transacs, cust_id=btn.name,
+                            title=btn.name, editable=False)
         popup.open()
 
     def add_transac(self, btn, *args):
-        popup = Transaction('transaction.json', cust_id=btn.name,
-            title=btn.name)
+        popup = Transaction(cust_id=btn.name, title=btn.name)
         popup.open()
-
-
-
-
-class Transaction(Popup):
-
-    def __init__(self, conf_file, data=None, cust_id=None, **kwargs):
-        super().__init__(**kwargs)
-        self.cust_id = cust_id
-        self.config = self.get_config(conf_file)
-        self._id = self.config['id']
-
-        # add header
-        helper.add_item_in_tab(self, self.config['columns'],
-                               self.config['type'])
-        # view transactions
-        if data is not None:
-            self.fill_data(data)
-        # add new transaction
-        if cust_id is not None:
-            self.fill_fields()
-
-    def get_config(self, conf_file):
-        with open('configs/{}'.format(conf_file)) as f:
-            config = json.load(f)
-        return config
-
-    def fill_data(self, data):
-        self.content.children[0].add_new_rows(
-                1, self.config['columns'], len(data), data)
-
-    def fill_fields(self):
-        target = self.content.children[0]
-        target.add_new_rows(1, self.config['columns'], 1)
-        helper.add_buttons(self, self.config['buttons'])
 
 
 class Elements(Widget):
