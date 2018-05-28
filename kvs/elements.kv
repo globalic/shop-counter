@@ -1,5 +1,6 @@
 <Elements>:
 	msg_box: msg_box
+	common_fields: common_fields
 	canvas:
 		Color:
 			rgba: .9,.9,.9,1
@@ -13,7 +14,7 @@
 		BoxLayout:
 			id: header
 			orientation: 'vertical'
-			size_hint_y: .1
+			size_hint_y: .3
 			Label:
 				id: org_logo
 				color: (0,0,0,1)
@@ -26,7 +27,7 @@
 			id: tab_panel
 			size_hint: (1, 1)
 			do_default_tab: False
-			tab_width: self.parent.width / 5
+			tab_width: self.parent.width / 6
 
 		BoxLayout:
 			size: (20, 30)
@@ -62,6 +63,7 @@
 	color: (0,0,0,1)
 	size: (20, 30)
 	size_hint: (1, None)
+	halign: 'center'
 
 <Button>:
 	color: (1,1,1,1)

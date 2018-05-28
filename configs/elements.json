@@ -1,6 +1,13 @@
 {
     "org_name": "Shri Ram Jewell Makers, Kushmiliya",
-    "common_fields": ["On Counter", "Dated", "Gold (Rs./10g)", "Silver (Rs./10g)"],
+    "common_fields": [
+        {"id": "on_counter", "text": "On Counter", "default_value":"Lalit K. Soni"},
+        {"id": "dated", "text": "Dated", "default_value":"get_date"},
+        {"id": "gold_rate", "text": "Gold (Rs./10g)", "default_value":""},
+        {"id": "silver_rate", "text": "Silver (Rs./10g)", "default_value":""},
+        {"id": "cust_name", "text": "Customer Name", "default_value":""},
+        {"id": "cust_addr", "text": "Customer Addr", "default_value":""}
+    ],
     "tabs": [
     	{
     	    "tab_id": "customer_entry",
@@ -21,8 +28,16 @@
     	{
     	    "tab_id": "order_entry",
     	    "title": "Order Entry",
-    	    "columns": ["S. No.", "Type", "Particular", "Design No.", "Est. Wt. (g)", "Labour (Rs.)", "Est. Cost (Rs.)"],
-    	    "visible": "false",
+    	    "columns": [
+                {"id": "sno", "text": "S. No.", "wid": 50},
+                {"id": "type", "text": "Type", "wid": 50},
+                {"id": "parti", "text": "Particular", "wid": 0},
+                {"id": "design_no", "text": "Design No.", "wid": 100},
+                {"id": "est_wt", "text": "Weight \n(g)", "wid": 100},
+                {"id": "labour", "text": "Labour \n(Rs.)", "wid": 100},
+                {"id": "est_cost", "text": "Est. Cost \n(Rs.)", "wid": 100}
+            ],
+    	    "visible": "true",
     	    "type": "entry",
     	    "default_rows": 5,
             "buttons": [
@@ -35,16 +50,16 @@
     	    "columns": [
         		{"id": "sno", "text": "S. No.", "wid": 50},
         		{"id": "parti", "text": "Particular", "wid": 0},
-        		{"id": "wt", "text": "Weight (g)", "wid": 100},
-        		{"id": "less", "text": "Copper Less (%)", "wid": 100},
-        		{"id": "rated", "text": "Rated (Rs./g)", "wid": 100},
-        		{"id": "labour", "text": "Labour (Rs.)", "wid": 100},
-        		{"id": "cost", "text": "Cost (Rs.)", "wid": 100},
+        		{"id": "wt", "text": "Weight \n(g)", "wid": 100},
+        		{"id": "less", "text": "Copper Less \n(%)", "wid": 100},
+        		{"id": "rated", "text": "Rated \n(Rs./g)", "wid": 100},
+        		{"id": "labour", "text": "Labour \n(Rs.)", "wid": 100},
+        		{"id": "cost", "text": "Cost \n(Rs.)", "wid": 100},
         		{"id": "is_deliver", "text": "Is Delivering", "wid": 100},
         		{"id": "order_id", "text": "Order ID", "wid": 100},
         		{"id": "order_dated", "text": "Order Dated", "wid": 100}
     	    ],
-    	    "visible": "false",
+    	    "visible": "true",
     	    "type": "entry",
     	    "default_rows": 5,
             "buttons": [

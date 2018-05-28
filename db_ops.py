@@ -20,7 +20,7 @@ def insert_update_many(key, data, pk=None):
             db.customers.insert_many(data)
             return (0, 'Customer Registered!')
 
-    elif key == 'transactions' and pk is not None:
+    elif (key == 'transactions' or key == 'order_entry') and pk is not None:
         cust = db.customers.find_one({'name': pk})
         if cust is not None:
             if key in cust:
@@ -38,7 +38,7 @@ def insert_update_many(key, data, pk=None):
         return (0, 'Transaction Inserted!')
 
     else:
-        pass
+        return (1, 'No Valid Key Found!')
 
 def find(table, k, v, required_key=None, match_exact=True):
     res = []

@@ -42,7 +42,7 @@ class Table(GridLayout):
                 if data is None:
                     text = ''
                     if col.get('value') is not None:
-                        text = getattr(self, col['value'])()
+                        text = funcs[col['value']]()
                     self.add_widget(CustomTextInput(
                         size=(col['wid'], 30),
                         size_hint=(width, None),
@@ -56,8 +56,7 @@ class Table(GridLayout):
                         text=data[i][col['id']]
                     ))
 
-    def get_date(self):
-        return datetime.now().strftime('%d/%m/%Y')
+
 
     def save_entry(self, tab, *args):
         rows = int(len(self.children)/self.cols)
@@ -73,7 +72,17 @@ class Table(GridLayout):
             if all([v == '' for v in entry.values()]):
                 continue
             entries.append(entry)
-        msg = db_ops.insert_update_many(tab._id, entries, tab.cust_id)
+
+        cust_id = None
+        if tab.cust_id is None:
+            # for field in App.get_running_app().root.children[0].common_fields:
+            #     if hasattr(field, 'field') and field.feild == 'cust_name':
+            #         cust_id = field.text
+            #         break
+            cust_id = App.get_running_app().root.children[0].common_fields.children[2].text
+        else:
+            cust_id = tab.cust_id
+        msg = db_ops.insert_update_many(tab._id, entries, cust_id)
         print(msg)
         show_msg(msg)
 
@@ -81,6 +90,9 @@ class Table(GridLayout):
         # this function assumes the table is in Popup widget
         popup.dismiss()
 
+
+def get_date():
+    return datetime.now().strftime('%d/%m/%Y')
 
 def add_item_in_tab(tab_widget, columns, tab_type=None, n_rows=0):
     n_cols = len(columns)
@@ -115,7 +127,7 @@ def calculate_bal(transacs):
     for t in transacs:
         debit += (int(t['debit']) if t['debit'] is not '' else 0)
         credit += (int(t['credit']) if t['credit'] is not '' else 0)
-        
+
     return (credit - debit)
 
 def clear_msg(box, a):
@@ -126,3 +138,7 @@ def show_msg(msg):
     msg_box.text = msg[1]
     msg_box.color = ([0, 0.5, 0, 1] if msg[0] == 0 else [0.5, 0, 0, 1])
     Timer(3, clear_msg, (msg_box, 'x')).start()
+
+
+# facilitate available functions with string variables
+funcs = {'get_date': get_date}

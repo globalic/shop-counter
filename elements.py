@@ -67,8 +67,6 @@ class SearchTab(BoxLayout):
         popup.open()
 
 
-
-
 class Transaction(Popup):
 
     def __init__(self, conf_file, data=None, cust_id=None, **kwargs):
@@ -102,16 +100,20 @@ class Transaction(Popup):
         helper.add_buttons(self, self.config['buttons'])
 
 
+class OrderEntryTab:
+    pass
+
 class Elements(Widget):
 
     msg_box = ObjectProperty()
+    common_fields = ObjectProperty()
 
     def __init__(self, **kargs):
         super().__init__(**kargs)
         self.element_file = 'configs/elements.json'
         self.elements = self.get_elements()
         self.ids.org_logo.text = self.elements['org_name']
-        #self.add_common_fields()
+        self.add_common_fields()
         self.add_tabs()
 
     def get_elements(self):
@@ -121,10 +123,14 @@ class Elements(Widget):
 
     def add_common_fields(self):
         for field in self.elements['common_fields']:
-            self.ids.common_fields.add_widget(
-                Label(text=field))
-            self.ids.common_fields.add_widget(
-                TextInput(multiline=False))
+            if hasattr(helper, field['default_value']):
+                text = getattr(helper, field['default_value'])()
+            else:
+                text = field['default_value']
+
+            self.ids.common_fields.add_widget(Label(text=field['text']))
+            self.ids.common_fields.add_widget(CustomTextInput(multiline=False,
+                    field=field['id'], text=text))
 
     def add_tabs(self):
         need_default = True
