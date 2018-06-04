@@ -27,6 +27,13 @@ class CustomButton(Button):
         super().__init__(**kwargs)
         self.name = name
         self.addr = addr
+        
+        
+class CustomLabel(Label):
+    
+    def __init__(self, trans_id=None, **kwargs):
+        super().__init__(**kwargs)
+        self.trans_id = trans_id
 
 
 class Transaction(Popup):
@@ -73,10 +80,11 @@ class Table(GridLayout):
     def add_new_rows(self, sno, cols, n, data=None, editable=True,
                      cust_id=None):
         for i in range(n):
-            self.add_widget(Label(
+            self.add_widget(CustomLabel(
                 text=str(sno+i),
                 size=(50, 30),
-                size_hint=(None, None)))
+                size_hint=(None, None),
+                trans_id=data[i].get('created_at') if data else None))
             for col in cols[1:]:
                 width = (1 if col['wid'] is 0 else None)
 
@@ -91,6 +99,7 @@ class Table(GridLayout):
                         ))
                     else:
                         self.add_widget(Label(text=""))
+                            
                 elif editable:
                     input_box = CustomTextInput(size=(col['wid'], 30),
                         size_hint=(width, None), field=col['id'], text='')
@@ -114,13 +123,15 @@ class Table(GridLayout):
         entries = []
         for i in range(rows-1):
             entry = {}
-            for j in range(self.cols-1):  # ignore the S. No.
+            for j in range(self.cols):
                 cell = self.children[i*self.cols+j]
                 if hasattr(cell, 'field'):
                     entry[cell.field] = cell.text.strip()
                     cell.text = ''
+                elif hasattr(cell, 'trans_id') and getattr(cell, 'trans_id'):
+                    entry['created_at'] = cell.trans_id
             # check if whole row is empty
-            if all([v == '' for v in entry.values()]):
+            if all([v in ('', None) for v in entry.values()]):
                 continue
             entries.append(entry)
         msg = db_ops.insert_many(tab._id, entries, tab.cust_id)

@@ -24,9 +24,7 @@ def insert_many(key, data=[], pk=None):
             return (0, 'Customer Registered!')
 
     elif key == 'transactions' and pk is not None:
-        print(data)        
         data = add_timestamp(data)
-        print(data)        
         if 'updated_at' not in data[0]:
             db.customers.update({'name': pk}, {
                 '$push': {key: {'$each': data} }
@@ -58,7 +56,7 @@ def update_nested(new_doc, pk, nesting_key, nested_doc_id='created_at'):
     search_key = '{}.{}'.format(nesting_key, nested_doc_id)
     processed_doc = {}
     for k, v in new_doc.items():
-        processed_doc['{}.$.{}'.format(search_key, k)] = v
+        processed_doc['{}.$.{}'.format(nesting_key, k)] = v
     res = db['customers'].update({'name': pk, search_key: new_doc['created_at']},
                            {'$set': processed_doc})
                            
@@ -69,6 +67,6 @@ def add_timestamp(data):
         key = 'created_at'
         if key in doc:
             key = 'updated_at'
-        doc[key] = time.time()
+        doc[key] = str(time.time())
     return data
     
