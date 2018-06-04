@@ -21,7 +21,7 @@ class Home(App):
         db_ops.client.close()
 
 if __name__ == '__main__':
-    # Window.maximize()
-    # Window.minimum_width = 900
-    # Window.minimum_height = 600
+    Window.maximize()
+    Window.minimum_width = 900
+    Window.minimum_height = 600
     Home().run()

@@ -57,8 +57,8 @@ class SearchTab(BoxLayout):
 
     def view_transac(self, btn, *args):
         transacs = db_ops.find('customers', 'name', btn.name, 'transactions')
-        popup = Transaction(data=transacs, cust_id=btn.name,
-                            title=btn.name, editable=False)
+        popup = Transaction(data=transacs, cust_id=btn.name, title=btn.name, 
+            editable=False)
         popup.open()
 
     def add_transac(self, btn, *args):

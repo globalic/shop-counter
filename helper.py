@@ -15,9 +15,10 @@ import json
 
 class CustomTextInput(TextInput):
 
-    def __init__(self, field=None, **kwargs):
+    def __init__(self, field=None, txn_id=None, **kwargs):
         super().__init__(**kwargs)
         self.field = field
+        self.txn_id = txn_id
 
 
 class CustomButton(Button):
@@ -54,9 +55,8 @@ class Transaction(Popup):
         return config
 
     def fill_data(self, data):
-        self.content.children[0].add_new_rows(
-            1, self.config['columns'], len(data), data, cust_id=self.cust_id,
-            editable=False)
+        self.content.children[0].add_new_rows(1, self.config['columns'], 
+            len(data), data, cust_id=self.cust_id, editable=False)
 
     def fill_fields(self, data=None):
         target = self.content.children[0]
@@ -80,30 +80,34 @@ class Table(GridLayout):
             for col in cols[1:]:
                 width = (1 if col['wid'] is 0 else None)
 
-                if data and col['id'] == 'action':
-                    self.add_widget(Button(
-                        size=(col['wid'], 30),
-                        size_hint=(width, None),
-                        text='Edit',
-                        on_release=partial(edit_transac, '', [data[i]],
-                                           cust_id, source=self.parent)
-                    ))
-                elif editable is True:
-                    self.add_widget(CustomTextInput(
-                        size=(col['wid'], 30),
-                        size_hint=(width, None),
-                        field=col['id'],
-                        text=(data[i].get(col['id']) if data else '')
-                    ))
+                if col['id'] == 'action':
+                    if not editable and data:
+                        self.add_widget(Button(
+                            size=(col['wid'], 30),
+                            size_hint=(width, None),
+                            text='Edit',
+                            on_release=partial(edit_transac, '', [data[i]],
+                                cust_id, source=self.parent)
+                        ))
+                    else:
+                        self.add_widget(Label(text=""))
+                elif editable:
+                    input_box = CustomTextInput(size=(col['wid'], 30),
+                        size_hint=(width, None), field=col['id'], text='')
+                    if data:
+                        input_box.text = data[i].get(col['id'])
+                        input_box.txn_id = data[i].get('txn_id')
+                    elif col.get('value'):
+                        input_box.text = col['value']
+                    elif col['id'] in ('date', 'dated'):
+                        input_box.text = get_date()
+                    self.add_widget(input_box)
                 elif data:
                     self.add_widget(Label(
                         size=(col['wid'], 30),
                         size_hint=(width, None),
                         text=data[i][col['id']]
                     ))
-
-    def get_date(self):
-        return datetime.now().strftime('%d/%m/%Y')
 
     def save_entry(self, tab, *args):
         rows = int(len(self.children)/self.cols)
@@ -112,14 +116,14 @@ class Table(GridLayout):
             entry = {}
             for j in range(self.cols-1):  # ignore the S. No.
                 cell = self.children[i*self.cols+j]
-                # print(cell.text)
-                entry[cell.field] = cell.text.strip()
-                cell.text = ''
+                if hasattr(cell, 'field'):
+                    entry[cell.field] = cell.text.strip()
+                    cell.text = ''
             # check if whole row is empty
             if all([v == '' for v in entry.values()]):
                 continue
             entries.append(entry)
-        msg = db_ops.insert_update_many(tab._id, entries, tab.cust_id)
+        msg = db_ops.insert_many(tab._id, entries, tab.cust_id)
         print(msg)
         show_msg(msg)
 
@@ -177,3 +181,6 @@ def show_msg(msg):
     msg_box.text = msg[1]
     msg_box.color = ([0, 0.5, 0, 1] if msg[0] == 0 else [0.5, 0, 0, 1])
     Timer(3, clear_msg, (msg_box, 'x')).start()
+
+def get_date():
+    return datetime.now().strftime('%Y/%m/%d')
