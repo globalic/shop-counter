@@ -2,3 +2,5 @@
 *.pyc
 installer
 *db
+*swp
+**.swp

@@ -46,6 +46,8 @@ def find(table, k, v, required_key=None, match_exact=True):
 
     if required_key is None:
         res = list(db[table].find({k: v}) )
+    elif required_key == 'transactions':  
+        res = get_multiple_sorted(required_key, k, v) 
     else:
         res = list(db[table].find({k: v}, {required_key: 1, '_id': 0}))[0]
         if required_key in res:
@@ -70,3 +72,14 @@ def add_timestamp(data):
         doc[key] = str(time.time())
     return data
     
+def get_multiple_sorted(key, k, v, order_by='dated'):
+	dollar_key = '${}'.format(key)
+	res = list(db['customers'].aggregate([
+		{'$match': {k: v}},
+		{'$unwind': dollar_key},
+		{'$project': {key: dollar_key, '_id': 0}},
+		{'$sort': {'{}.{}'.format(key, order_by): -1}}	
+	]))
+	for i in range(len(res)):
+		res[i] = res[i][key]	
+	return res
