@@ -6,6 +6,7 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.tabbedpanel import TabbedPanelItem
+from kivy.uix.scrollview import ScrollView
 from kivy.lang import Builder
 from kivy.properties import ObjectProperty
 import json
@@ -38,21 +39,27 @@ class SearchTab(BoxLayout):
         if self.box is None:
             return
         self.box.clear_widgets()
+        required_height = 31 * (len(results) + 1)
+        if self.box.height < required_height:
+            self.box.size_hint_y = None
+            self.box.height = required_height
 
+        self.box.add_widget(Label(text='S. No.'))
         self.box.add_widget(Label(text='Name'))
         self.box.add_widget(Label(text='Address'))
         self.box.add_widget(Label(text='Balance'))
         self.box.add_widget(Label(text=''))
         self.box.add_widget(Label(text=''))
 
-        for res in results:
-            balance = helper.calculate_bal(res.get('transactions'))
-            self.box.add_widget(Label(text=res['name']))
-            self.box.add_widget(Label(text=res['addr']))
+        for i in range(len(results)):
+            balance = helper.calculate_bal(results[i].get('transactions'))
+            self.box.add_widget(Label(text=str(i+1)))
+            self.box.add_widget(Label(text=results[i]['name']))
+            self.box.add_widget(Label(text=results[i]['addr']))
             self.box.add_widget(Label(text=str(balance) ))
-            self.box.add_widget(CustomButton(text='View', name=res['name'],
+            self.box.add_widget(CustomButton(text='View', name=results[i]['name'],
                 on_release=self.view_transac))
-            self.box.add_widget(CustomButton(text='Add New', name=res['name'],
+            self.box.add_widget(CustomButton(text='Add New', name=results[i]['name'],
                 on_release=self.add_transac))
 
     def view_transac(self, btn, *args):
@@ -64,6 +71,12 @@ class SearchTab(BoxLayout):
     def add_transac(self, btn, *args):
         popup = Transaction(cust_id=btn.name, title=btn.name)
         popup.open()
+        
+        
+class SearchTabContent(BoxLayout):
+    
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
 
 class Elements(Widget):
@@ -120,13 +133,13 @@ class Elements(Widget):
                 self.ids.tab_panel.add_widget(tab_widget)
 
     def fill_search_tab(self, tab_widget, columns, tab_type):
-        results = Table(cols=5)
-        # fill results with columns header
-        #helper.add_item_in_tab(results, [], tab_type, 0)
-        # add search box
-        #search = SearchTab(results.children[0].children[0])
+        results = Table(cols=6)
         search = SearchTab(results)
+        scroll_result = ScrollView()
+        scroll_result.add_widget(results)
+        
         tab_content = BoxLayout(orientation='vertical')
         tab_content.add_widget(search)
-        tab_content.add_widget(results)
+        tab_content.add_widget(scroll_result)
+        
         tab_widget.add_widget(tab_content)
