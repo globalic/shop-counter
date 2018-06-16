@@ -40,12 +40,12 @@ def insert_many(key, data=[], pk=None):
 def find(table, k, v, required_key=None, match_exact=True):
     res = []
     if v == '' or v is None:
-        return []
+        v = '.*'
     if not match_exact:
         v = re.compile(v, re.IGNORECASE)
 
     if required_key is None:
-        res = list(db[table].find({k: v}) )
+        res = list(db[table].find({k: v}))
     elif required_key == 'transactions':  
         res = get_multiple_sorted(required_key, k, v) 
     else:
