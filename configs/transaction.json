@@ -5,9 +5,9 @@
         {"id": "dated", "text": "Dated", "wid": 100},
         {"id": "ref", "text": "Reference", "wid": 100},
         {"id": "nar", "text": "Narration", "wid": 0},
-        {"id": "debit", "text": "Debit", "wid": 0},
-        {"id": "credit", "text": "Credit", "wid": 0},
-        {"id": "action", "text": "Action", "wid": 0}
+        {"id": "debit", "text": "Debit", "wid": 100},
+        {"id": "credit", "text": "Credit", "wid": 100},
+        {"id": "action", "text": "Action", "wid": 100}
     ],
     "type": "view",
     "buttons": [

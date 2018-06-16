@@ -5,6 +5,7 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.popup import Popup
+from kivy.uix.scrollview import ScrollView
 from kivy.app import App
 from functools import partial
 from datetime import datetime
@@ -62,11 +63,11 @@ class Transaction(Popup):
         return config
 
     def fill_data(self, data):
-        self.content.children[0].add_new_rows(1, self.config['columns'], 
+        self.content.children[0].children[0].add_new_rows(1, self.config['columns'], 
             len(data), data, cust_id=self.cust_id, editable=False)
 
     def fill_fields(self, data=None):
-        target = self.content.children[0]
+        target = self.content.children[0].children[0]
         target.add_new_rows(1, self.config['columns'], 1, data,
                             cust_id=self.cust_id)
         add_buttons(self, self.config['buttons'])
@@ -79,6 +80,7 @@ class Table(GridLayout):
 
     def add_new_rows(self, sno, cols, n, data=None, editable=True,
                      cust_id=None):
+        set_height(self, n)
         for i in range(n):
             self.add_widget(CustomLabel(
                 text=str(sno+i),
@@ -145,13 +147,12 @@ class Table(GridLayout):
 
 def edit_transac(transac_id, data, cust_id, *args, source=None, **kwargs):
     if source:
-        source.parent.parent.parent.dismiss()
+        source.parent.parent.parent.parent.dismiss()
     Transaction(data=data, cust_id=cust_id, title=cust_id).open()
 
 def add_item_in_tab(tab_widget, columns, tab_type=None, n_rows=0):
     n_cols = len(columns)
-    tab_content = BoxLayout(orientation='vertical')
-    table = Table(cols=n_cols)
+    table = Table(cols=n_cols) 
     for col in columns:
         width = (1 if col['wid'] is 0 else None)
         table.add_widget(Label(
@@ -159,13 +160,16 @@ def add_item_in_tab(tab_widget, columns, tab_type=None, n_rows=0):
             size=(col['wid'], 50),
             size_hint=(width, None)
         ))
-    tab_content.add_widget(table)
+    tab_content_scrollable = ScrollView()
+    tab_content_scrollable.add_widget(table)
+    tab_content = BoxLayout(orientation='vertical')
+    tab_content.add_widget(tab_content_scrollable)
     tab_widget.add_widget(tab_content)
 
 def add_buttons(target, buttons):
     # btn id is should be same as the call function name for that button
     # and must be defined in Table class
-    table = target.content.children[0]
+    table = target.content.children[0].children[0]
     for btn in buttons:
         target.content.add_widget(Button(
             text=btn['text'],
@@ -195,3 +199,10 @@ def show_msg(msg):
 
 def get_date():
     return datetime.now().strftime('%Y/%m/%d')
+
+
+def set_height(box, n):
+	required_h = 31 * (n + 2)
+	if box.height < required_h:
+		box.size_hint_y = None
+		box.height = required_h

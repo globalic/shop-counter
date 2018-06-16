@@ -39,10 +39,7 @@ class SearchTab(BoxLayout):
         if self.box is None:
             return
         self.box.clear_widgets()
-        required_height = 31 * (len(results) + 1)
-        if self.box.height < required_height:
-            self.box.size_hint_y = None
-            self.box.height = required_height
+        helper.set_height(self.box, len(results))
 
         self.box.add_widget(Label(text='S. No.'))
         self.box.add_widget(Label(text='Name'))
@@ -115,7 +112,7 @@ class Elements(Widget):
 
                 # add text fields and buttons for entry type tabs
                 if tab['type'] == 'entry':
-                    tab_widget.content.children[0].add_new_rows(
+                    tab_widget.content.children[0].children[0].add_new_rows(
                         1, tab['columns'], tab['default_rows'])
                     helper.add_buttons(tab_widget,
                         tab['buttons'])
