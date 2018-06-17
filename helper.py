@@ -82,6 +82,8 @@ class Table(GridLayout):
                      cust_id=None):
         set_height(self, n)
         for i in range(n):
+            if data and data[i].get('deleted') is True:
+                continue
             self.add_widget(CustomLabel(
                 text=str(sno+i),
                 size=(50, 30),
@@ -92,15 +94,20 @@ class Table(GridLayout):
 
                 if col['id'] == 'action':
                     if not editable and data:
-                        self.add_widget(Button(
-                            size=(col['wid'], 30),
-                            size_hint=(width, None),
-                            text='Edit',
-                            on_release=partial(edit_transac, '', [data[i]],
-                                cust_id, source=self.parent)
-                        ))
+                        edit = Button(text='Edit', on_release=partial(
+                            edit_transac, [data[i]], cust_id, source=self.parent))
+                        delete = Button(text='X', on_release=partial(
+                            delete_transac, data[i]['created_at'], cust_id, 
+                            self, (sno+i)))
+                        action_box = BoxLayout(size=(col['wid'], 30), 
+                            size_hint=(width, None))
+                            
+                        action_box.add_widget(edit)
+                        action_box.add_widget(delete)
+                        self.add_widget(action_box)
                     else:
-                        self.add_widget(Label(text=""))
+                        self.add_widget(Label(text="", size=(col['wid'], 30),
+                            size_hint=(width, None)))
                             
                 elif editable:
                     input_box = CustomTextInput(size=(col['wid'], 30),
@@ -129,7 +136,7 @@ class Table(GridLayout):
                 cell = self.children[i*self.cols+j]
                 if hasattr(cell, 'field'):
                     entry[cell.field] = cell.text.strip()
-                    cell.text = ''
+                    cell.text = '' if cell.field != 'dated' else cell.text
                 elif hasattr(cell, 'trans_id') and getattr(cell, 'trans_id'):
                     entry['created_at'] = cell.trans_id
             # check if whole row is empty
@@ -145,10 +152,18 @@ class Table(GridLayout):
         popup.dismiss()
 
 
-def edit_transac(transac_id, data, cust_id, *args, source=None, **kwargs):
+def edit_transac(data, cust_id, *args, source=None, **kwargs):
     if source:
         source.parent.parent.parent.parent.dismiss()
     Transaction(data=data, cust_id=cust_id, title=cust_id).open()
+    
+def delete_transac(trans_id, cust_id, table, row_no, *args):
+    action_box_index = table.children.index(args[0].parent)
+    for i in range(table.cols):
+        # same index is removed #cols times, as on removing one child, next takes 
+        # it's position and so same index can remove whole row
+        table.remove_widget(table.children[action_box_index])
+    db_ops.delete('transactions', cust_id, trans_id)
 
 def add_item_in_tab(tab_widget, columns, tab_type=None, n_rows=0):
     n_cols = len(columns)
@@ -183,6 +198,8 @@ def calculate_bal(transacs):
     debit = 0
     credit = 0
     for t in transacs:
+        if t.get('deleted') is True:
+            continue
         debit += (int(t['debit']) if t['debit'] is not '' else 0)
         credit += (int(t['credit']) if t['credit'] is not '' else 0)
 
@@ -199,7 +216,6 @@ def show_msg(msg):
 
 def get_date():
     return datetime.now().strftime('%Y/%m/%d')
-
 
 def set_height(box, n):
 	required_h = 31 * (n + 2)

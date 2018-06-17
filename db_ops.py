@@ -62,6 +62,13 @@ def update_nested(new_doc, pk, nesting_key, nested_doc_id='created_at'):
     res = db['customers'].update({'name': pk, search_key: new_doc['created_at']},
                            {'$set': processed_doc})
                            
+def delete(field, pk, field_id):
+    db['customers'].update({'name': pk, 
+        '{}.created_at'.format(field): field_id}, 
+        {'$set': {'{}.$.deleted'.format(field): True}}
+    )
+    
+                       
 def add_timestamp(data):
     # ideally this ids should be created at database level, since currently this 
     # is a single user app, it doesn't really matter
