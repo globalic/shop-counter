@@ -75,3 +75,16 @@
 
 <TabbedPanelHeader>:
 	color: (1,1,1,1)
+	
+<StatsTabContent>:
+	cols: 2
+	Label:
+		text: 'Total Customers: '
+	Label:
+		text: str(root.count_customers())
+	Label:
+		text: 'Total Balance: '
+	Label:
+		text: 'Rs. ' + str(root.calc_total_balance())
+	
+	

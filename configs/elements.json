@@ -64,6 +64,17 @@
     	    "visible": "true",
     	    "type": "search",
     	    "default_rows": 10
-    	}
+    	},
+        {
+            "tab_id": "stats",
+            "title": "Stats",
+            "columns": [
+                {"id": "insight", "text": "", "wid": 0},
+                {"id": "value", "text": "", "wid": 0}
+            ],
+            "visible": "true",
+            "type": "custom",
+            "default_rows": 0
+        }
     ]
 }

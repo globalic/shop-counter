@@ -13,6 +13,7 @@ import json
 import db_ops
 import helper
 from helper import CustomButton, CustomTextInput, Transaction, Table
+from helper import StatsTabContent
 
 Builder.load_file('kvs/elements.kv')
 
@@ -22,6 +23,12 @@ class Tab(TabbedPanelItem):
         super().__init__(**kwargs)
         self._id = tab_id
         self.cust_id = cust_id
+
+    def refresh_stats(self): 
+        content_box = StatsTabContent()
+        self.clear_widgets()
+        self.add_widget(content_box)
+
 
 
 class SearchTab(BoxLayout):
@@ -53,7 +60,7 @@ class SearchTab(BoxLayout):
             self.box.add_widget(Label(text=str(i+1)))
             self.box.add_widget(Label(text=results[i]['name']))
             self.box.add_widget(Label(text=results[i]['addr']))
-            self.box.add_widget(Label(text=str(balance) ))
+            self.box.add_widget(Label(text=helper.to_inr(balance) ))
             self.box.add_widget(CustomButton(text='View', name=results[i]['name'],
                 on_release=self.view_transac))
             self.box.add_widget(CustomButton(text='Add New', name=results[i]['name'],
@@ -68,12 +75,6 @@ class SearchTab(BoxLayout):
     def add_transac(self, btn, *args):
         popup = Transaction(cust_id=btn.name, title=btn.name)
         popup.open()
-        
-        
-class SearchTabContent(BoxLayout):
-    
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
 
 
 class Elements(Widget):
@@ -124,6 +125,11 @@ class Elements(Widget):
                         tab['columns'],
                         tab['type']
                     )
+                    
+                # specific tabs
+                if tab['type'] == 'custom':
+                    self.add_custom_tab(tab, tab_widget)
+                
                 if need_default:
                     self.ids.tab_panel.default_tab = tab_widget
                     need_default = False
@@ -140,3 +146,6 @@ class Elements(Widget):
         tab_content.add_widget(scroll_result)
         
         tab_widget.add_widget(tab_content)
+        
+    def add_custom_tab(self, config, tab):
+        getattr(helper, 'fill_{}_tab'.format(config['tab_id']))(tab)

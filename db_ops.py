@@ -68,7 +68,16 @@ def delete(field, pk, field_id):
         {'$set': {'{}.$.deleted'.format(field): True}}
     )
     
-                       
+def count(key=None, value=None):
+    if not key and not value: 
+        return db['customers'].find({'deleted': {'$exists': False}}, 
+            {'_id': 1}).count()
+    
+def get_transactions(skip, limit):
+    return list(db['customers'].find({'transactions': {'$exists': True}}, 
+        {'_id': 0, 'transactions.credit': 1, 'transactions.debit': 1, 
+        'transactions.deleted': 1}).skip(skip).limit(limit))
+
 def add_timestamp(data):
     # ideally this ids should be created at database level, since currently this 
     # is a single user app, it doesn't really matter

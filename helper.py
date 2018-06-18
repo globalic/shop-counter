@@ -150,6 +150,27 @@ class Table(GridLayout):
     def cancel(self, popup, *args):
         # this function assumes the table is in Popup widget
         popup.dismiss()
+        
+        
+            
+class StatsTabContent(Table):
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+    def count_customers(self):
+        return db_ops.count()
+        
+    def calc_total_balance(self):
+        start = 0
+        balance = 0
+        while True:
+            transacs = db_ops.get_transactions(start, start + 10)
+            for transac in transacs:
+                balance += calculate_bal(transac['transactions'])
+            if len(transacs) < 10:
+                return to_inr(balance)
+        
 
 
 def edit_transac(data, cust_id, *args, source=None, **kwargs):
@@ -217,8 +238,25 @@ def show_msg(msg):
 def get_date():
     return datetime.now().strftime('%Y/%m/%d')
 
+def to_inr(amount):
+    amount = str(amount)
+    curr = ''
+    if '.' in amount:
+        amount = amount.split('.') 
+        curr = amount[-1]
+        amount = amount[0]
+    curr = amount[-3:] + curr
+    amount = amount[0:-3]
+    while amount is not '':
+        curr = amount[-2:] + ',' + curr
+        amount = amount[0:-2]
+    return curr
+
 def set_height(box, n):
 	required_h = 31 * (n + 2)
 	if box.height < required_h:
 		box.size_hint_y = None
 		box.height = required_h
+
+def fill_stats_tab(tab):
+    tab.on_press = tab.refresh_stats    
