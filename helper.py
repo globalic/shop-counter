@@ -65,22 +65,28 @@ class Transaction(Popup):
     def fill_data(self, data):
         self.content.children[0].children[0].add_new_rows(1, self.config['columns'], 
             len(data), data, cust_id=self.cust_id, editable=False)
+        add_buttons(self, self.config['buttons_view'])
 
     def fill_fields(self, data=None):
         target = self.content.children[0].children[0]
         target.add_new_rows(1, self.config['columns'], 1, data,
                             cust_id=self.cust_id)
-        add_buttons(self, self.config['buttons'])
+        add_buttons(self, self.config['buttons_edit'])
 
 
 class Table(GridLayout):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.data = None
+        self.cust_id = None
 
     def add_new_rows(self, sno, cols, n, data=None, editable=True,
                      cust_id=None):
         set_height(self, n)
+        self.data = data
+        self.cust_id = cust_id
+
         for i in range(n):
             if data and data[i].get('deleted') is True:
                 continue
@@ -151,6 +157,9 @@ class Table(GridLayout):
         # this function assumes the table is in Popup widget
         popup.dismiss()
         
+    def export_csv(self, *args):
+        msg = export_csv(self.data, self.cust_id) 
+        show_msg(msg) 
         
             
 class StatsTabContent(Table):
@@ -198,7 +207,7 @@ def add_item_in_tab(tab_widget, columns, tab_type=None, n_rows=0):
         ))
     tab_content_scrollable = ScrollView()
     tab_content_scrollable.add_widget(table)
-    tab_content = BoxLayout(orientation='vertical')
+    tab_content = BoxLayout(orientation='vertical', size_hint=(1,1))
     tab_content.add_widget(tab_content_scrollable)
     tab_widget.add_widget(tab_content)
 
@@ -206,11 +215,13 @@ def add_buttons(target, buttons):
     # btn id is should be same as the call function name for that button
     # and must be defined in Table class
     table = target.content.children[0].children[0]
+    button_box = BoxLayout(size=(30,30), size_hint=(1,None))
     for btn in buttons:
-        target.content.add_widget(Button(
+        button_box.add_widget(Button(
             text=btn['text'],
             on_release=partial(getattr(table, btn['id']), target)
         ))
+    target.content.add_widget(button_box)
 
 def calculate_bal(transacs):
     if transacs is None:
@@ -221,8 +232,8 @@ def calculate_bal(transacs):
     for t in transacs:
         if t.get('deleted') is True:
             continue
-        debit += (int(t['debit']) if t['debit'] is not '' else 0)
-        credit += (int(t['credit']) if t['credit'] is not '' else 0)
+        debit += (float(t['debit']) if t['debit'] is not '' else 0)
+        credit += (float(t['credit']) if t['credit'] is not '' else 0)
 
     return (credit - debit)
 
@@ -243,7 +254,7 @@ def to_inr(amount):
     curr = ''
     if '.' in amount:
         amount = amount.split('.') 
-        curr = amount[-1]
+        curr = '.' + (amount[-1] + '0' if len(amount[-1]) == 1 else amount[-1][:2])
         amount = amount[0]
     curr = amount[-3:] + curr
     amount = amount[0:-3]
@@ -260,3 +271,16 @@ def set_height(box, n):
 
 def fill_stats_tab(tab):
     tab.on_press = tab.refresh_stats    
+
+def export_csv(data, cust_id):
+    if data is None or len(data) == 0:
+        return (1, 'No data to export')
+    filename = 'transactions_{}_{}.csv'.format(cust_id, get_date().replace('/', '-'))
+    with open(filename, 'w') as f:
+        # add header
+        f.write('S. No.,')
+        f.write(','.join(data[0].keys())) 
+        for i in range(len(data)):
+            f.write('\r\n{},'.format(i+1))
+            f.write(','.join(data[i].values()))
+    return (0, 'Exported as {}'.format(filename))

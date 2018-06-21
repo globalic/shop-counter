@@ -115,8 +115,7 @@ class Elements(Widget):
                 if tab['type'] == 'entry':
                     tab_widget.content.children[0].children[0].add_new_rows(
                         1, tab['columns'], tab['default_rows'])
-                    helper.add_buttons(tab_widget,
-                        tab['buttons'])
+                    helper.add_buttons(tab_widget, tab['buttons'])
 
                 # add search box and results header
                 if tab['type'] == 'search':

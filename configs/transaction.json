@@ -10,8 +10,12 @@
         {"id": "action", "text": "Action", "wid": 100}
     ],
     "type": "view",
-    "buttons": [
+    "buttons_edit": [
         {"id": "save_entry", "text": "Save"},
+        {"id": "cancel", "text": "Close"}
+    ],
+    "buttons_view": [
+        {"id": "export_csv", "text": "Export"},
         {"id": "cancel", "text": "Close"}
     ]
 }
