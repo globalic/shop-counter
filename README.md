@@ -12,6 +12,14 @@ Plan is to add options for taking orders and product sell entries.
 - Change database configuration in `configs/connect_db.json`.
 - Start application by executing `ShopCounter.exe`.
 
+# Upgrading
+
+- If you've using v1.0, there are some changes in the way data is stored. To 
+make your presaved data work with new version, run this script:
+```bash
+mongo utils/upgrade_from_v1.js
+```
+
 # Project Architecture
 
 - `shop-counter` is designed to be highly flexible to meet different
