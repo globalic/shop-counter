@@ -179,7 +179,7 @@ class StatsTabContent(Table):
                 balance += calculate_bal(transac['transactions'])
             if len(transacs) < 10:
                 return to_inr(balance)
-        
+            start += 10
 
 
 def edit_transac(data, cust_id, *args, source=None, **kwargs):
@@ -251,16 +251,19 @@ def get_date():
 
 def to_inr(amount):
     amount = str(amount)
+    negative = amount.startswith('-')
+    amount = amount[1:] if negative else amount
     curr = ''
     if '.' in amount:
         amount = amount.split('.') 
         curr = '.' + (amount[-1] + '0' if len(amount[-1]) == 1 else amount[-1][:2])
         amount = amount[0]
     curr = amount[-3:] + curr
-    amount = amount[0:-3]
+    amount = amount[:-3]
     while amount is not '':
         curr = amount[-2:] + ',' + curr
         amount = amount[0:-2]
+    curr = '-' + curr if negative else curr
     return curr
 
 def set_height(box, n):
